@@ -1,8 +1,9 @@
 import classNames from 'classnames';
+import { FilterStatus } from '../../types/FilterStatus';
 
 type Props = {
-  setFilterStatus: (link: string) => void;
-  filterStatus: string;
+  setFilterStatus: (link: FilterStatus) => void;
+  filterStatus: FilterStatus;
   todosActiveQuantity: number;
 };
 

@@ -1,23 +1,18 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { useCallback, useEffect, useState } from 'react';
-// import { UserWarning } from './UserWarning';
-// import { USER_ID } from './api/todos';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Header } from './copmonents/Header/Header';
 import { TodoList } from './copmonents/TodoList/TodoList';
 import { Footer } from './copmonents/Footer/Footer';
 import { Todo } from './types/Todo';
 import { getTodos } from './api/todos';
 import { ErrorNotification } from './copmonents/Error/Error';
+import { FilterStatus } from './types/FilterStatus';
 
 export const App: React.FC = () => {
-  // if (!USER_ID) {
-  //   return <UserWarning />;
-  // }
   const [todos, setTodos] = useState<Todo[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
-  const [filteredTodos, setFilteredTodos] = useState(todos);
-  const [filterStatus, setFilterStatus] = useState('all');
+  const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
 
   useEffect(() => {
     getTodos()
@@ -28,19 +23,17 @@ export const App: React.FC = () => {
       });
   }, []);
 
-  const filterTodosByStatus = useCallback(() => {
+  const filteredTodos = useMemo((): Todo[] => {
     if (filterStatus === 'all') {
-      setFilteredTodos(todos);
-    } else if (filterStatus === 'active') {
-      setFilteredTodos(todos.filter(todo => !todo.completed));
-    } else if (filterStatus === 'completed') {
-      setFilteredTodos(todos.filter(todo => todo.completed));
+      return todos;
     }
-  }, [filterStatus, todos]);
 
-  useEffect(() => {
-    filterTodosByStatus();
-  }, [filterTodosByStatus]);
+    if (filterStatus === 'active') {
+      return todos.filter(todo => !todo.completed);
+    }
+
+    return todos.filter(todo => todo.completed);
+  }, [filterStatus, todos]);
 
   const todosActiveQuantity = todos.filter(todo => !todo.completed).length;
 
